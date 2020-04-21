@@ -1,0 +1,23 @@
+#playground {
+    border: 1px solid black;
+    height: 600px;
+    width: 800px;
+    /* top: 400px; */
+    background: url("images/desert_sand.jpg");
+    position: absolute;
+}
+
+#vaisseau {
+    position : absolute;
+    top: 100px;
+    left:100px;
+    transition: top 2s, left 2s;
+}
+
+#boutonCentrer {
+    font-size: 125%;
+    border-color: black;
+    border-radius: 50%;
+    height: 60px;
+    width: 120px;
+}
