@@ -34,6 +34,17 @@ class Hitbox{
         }
         return true;
     }
+
+/*     contains(position){
+        if(((this.position.x+this.width)<hitbox.position.x) 
+        || ((hitbox.position.x+hitbox.width)<this.position.x)
+        || ((this.position.y+this.height)<hitbox.position.y)
+        || ((hitbox.position.y+hitbox.height)<this.position.y)){
+            return false;
+        }
+        return true;
+    } */
+    
 }
 
 /*
@@ -79,7 +90,6 @@ class Obstacle extends Image{
     constructor(imgPath, dom,position){
         super(imgPath,dom,position);
     }
-
 }
 
 /*
@@ -89,12 +99,12 @@ class Allie extends Image{
 
     constructor(imgPath, dom,position){
         super(imgPath,dom,position);
+        this.sauve = false;
     }
 
     estSauve(){
         this.img.remove();
-        game.sauve = game.sauve - 1;
-
+        this.sauve = true;
     }
 }
 
@@ -210,7 +220,7 @@ class Ennemi extends Sprite{
         if(this.orientation == 0){
             if(this.direction == 1){//se dirige vert quart1
                 //si dépasse la position, va à la position
-                if((this.position.y-vitesse) > this.quart1.y){
+                if((this.position.y+vitesse) > this.quart1.y){
                     vitesse = this.quart1.y-this.position.y;
                 }
                 this.moveRel(new Position(0,vitesse),duree);
@@ -221,7 +231,7 @@ class Ennemi extends Sprite{
             } else{ //this.direction == 0 donc se dirige vers quart0
                 if(this.direction == 0){
                     //si dépasse la position, va à la position
-                    if((this.position.y+vitesse) < this.quart0.y){
+                    if((this.position.y-vitesse) < this.quart0.y){
                         vitesse = this.quart0.y-this.position.y;
                     }
                     this.moveRel(new Position(0,-vitesse),duree);

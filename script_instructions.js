@@ -1,45 +1,7 @@
 
 const robot = new Robot ("images/R2D2.png", "playground",new Position(20,20));
 let game = new Game(robot);
-
-//Ennemis
-const ennemi1 = new Ennemi("images/stormtrooper.png", "playground",new Position(160,200),0,180);
-game.ennemi1 = ennemi1;
-const ennemi2 = new Ennemi("images/stormtrooper.png", "playground",new Position(530,20),1,220);
-game.ennemi2 = ennemi2;
-const ennemi3 = new Ennemi("images/stormtrooper.png", "playground",new Position(470,200),1,120);
-game.ennemi3 = ennemi3;
-
-//Objectif
-const faucon = new Image ("images/faucon.png", "playground",new Position((800-146),(600-100)));
-game.faucon = faucon;
-
-//Chrono
-let vador = new Vador("images/vador.png", "playground",new Position(0,600-90));
-game.vador = vador;
-
-//Allies
-const luke = new Allie("images/luke.png", "playground", new Position(30,360));
-game.luke = luke;
-game.lukeSauve = false;
-const leila = new Allie("images/leila.png", "playground", new Position(580,370));
-game.leila = leila;
-game.leilaSauve = false;
-const solo = new Allie("images/solo.png", "playground", new Position(300,200));
-game.solo = solo;
-game.soloSauve = false;
-
-
-//Obstacles
-const obs = new Obstacle("images/obstacle1.png","playground",new Position(0,600-30-91));
-const obs2 = new Obstacle("images/obstacle.png","playground",new Position(20,320));
-const obs3 = new Obstacle("images/obstacle.png","playground",new Position(20,120));
-const obs4 = new Obstacle("images/obstacle4.png","playground",new Position(240,0));
-const obs5 = new Obstacle("images/obstacle4.png","playground",new Position(640,120));
-const obs6 = new Obstacle("images/obstacle.png","playground",new Position(400,120));
-const obs7 = new Obstacle("images/obstacle.png","playground",new Position(300,320));
-const obs8 = new Obstacle("images/obstacle2.png","playground",new Position(520,330));
-
+game.initialiseNiveau1();
 
 window.onkeydown = function(e) {
     switch(e.key) {
@@ -85,49 +47,38 @@ window.onkeyup = function(e) {
         }
 }
 
-
-    const move = 10;
-        
-    if(game.ArrowLeft){
-        robot.moveRel(-move,0);
-    }
-
-    if(game.ArrowDown){
-    robot.moveRel(0,move);
-
-    }
-
-    if(game.ArrowRight){
-        robot.moveRel(move,0);
-    }
-
-    if(game.ArrowUp){
-        robot.moveRel(0,-move);
-    }
-let Frame;
-let Framep;
-jeu = function (temps){
-    Frame = temps;
-    const duree = Frame-Framep;
-    if(Framep != null){
+let jeu = {};
+jeu.frameNb = 0;
+jeu.requestId;
+jeu.fonction = function (temps){
+    if(jeu.requestId != null){
         if(game.perdu){
-            console.log("game over");
+            game.aPerdu();
+            game.reInitisalise();
+            game.initialiseNiveau1();
+            jeu.frameNb = 0;
+            jeu.requestId = null;
+            window.requestAnimationFrame(jeu.fonction);
+            //window.cancelAnimationFrame(jeu.requestId);            
         }
         if(game.gagne){
-            console.log("Félicitations vous avez gagné !")
+            game.aGagne();
+            window.cancelAnimationFrame(jeu.requestId);            
         }
         if(game.run && !game.perdu && !game.gagne){
+            jeu.frameNb = jeu.frameNb + 1;
             game.updateFrame(10);
-            Framep = Frame;
-            window.requestAnimationFrame(jeu);   
+            jeu.requestId = window.requestAnimationFrame(jeu.fonction);   
         }
         if(!game.run) {
-            Framep = Frame;
-            window.requestAnimationFrame(jeu);
+            jeu.requestId = window.requestAnimationFrame(jeu.fonction);
         }
-    } else {  
-        Framep = Frame;
-        window.requestAnimationFrame(jeu);   
-    }
+     } else {  
+        jeu.requestId = window.requestAnimationFrame(jeu.fonction);   
+    } 
 }
-jeu(0);
+
+jeu.fonction(0);
+
+
+
