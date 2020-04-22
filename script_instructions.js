@@ -1,7 +1,6 @@
 
 const robot = new Robot ("images/R2D2.png", "playground",new Position(20,20));
 let game = new Game(robot);
-game.initialiseNiveau1();
 
 window.onkeydown = function(e) {
     switch(e.key) {
@@ -23,6 +22,8 @@ window.onkeydown = function(e) {
         case 'd' :
             game.run = true;
             break;
+        case 't':
+            game.gagne = true;
         default :
             break;
         }
@@ -55,7 +56,14 @@ jeu.fonction = function (temps){
         if(game.perdu){
             game.aPerdu();
             game.reInitisalise();
-            game.initialiseNiveau1();
+            switch(game.niveau){
+                case 1 :
+                    game.initialiseNiveau1();
+                    break;
+                case 2 :
+                    game.initialiseNiveau2();
+                    break;
+            }
             jeu.frameNb = 0;
             jeu.requestId = null;
             window.requestAnimationFrame(jeu.fonction);
@@ -63,10 +71,15 @@ jeu.fonction = function (temps){
         }
         if(game.gagne){
             game.aGagne();
-            window.cancelAnimationFrame(jeu.requestId);            
+            game.reInitisalise();
+            game.initialiseNiveau2();
+            jeu.frameNb = 0;
+            jeu.requestId = null;
+            window.requestAnimationFrame(jeu.fonction);
+            //window.cancelAnimationFrame(jeu.requestId);            
         }
         if(game.run && !game.perdu && !game.gagne){
-            jeu.frameNb = jeu.frameNb + 1;
+            jeu.frameNb = jeu.frameNb+1;
             game.updateFrame(10);
             jeu.requestId = window.requestAnimationFrame(jeu.fonction);   
         }
@@ -78,7 +91,9 @@ jeu.fonction = function (temps){
     } 
 }
 
+game.initialiseNiveau1();
 jeu.fonction(0);
+
 
 
 

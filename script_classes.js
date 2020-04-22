@@ -33,18 +33,7 @@ class Hitbox{
             return false;
         }
         return true;
-    }
-
-/*     contains(position){
-        if(((this.position.x+this.width)<hitbox.position.x) 
-        || ((hitbox.position.x+hitbox.width)<this.position.x)
-        || ((this.position.y+this.height)<hitbox.position.y)
-        || ((hitbox.position.y+hitbox.height)<this.position.y)){
-            return false;
-        }
-        return true;
-    } */
-    
+    }  
 }
 
 /*
@@ -124,7 +113,7 @@ class Sprite extends Image{
         //vérifie que la position fournie est correcte et que le sprite ne sortira pas de son élément conteneur
         if(this.insideDOMcontient(position)){
             this.position = position;
-            this.hitbox.position = position;
+            this.hitbox.position = this.position;
             this.img.style.left = position.x+"px"; 
             this.img.style.top = position.y+"px";
         }
