@@ -7,8 +7,7 @@ class Position{
         this.x = x;
         this.y = y;
     }
-    
-    //retourne une nouvelle Position qui est la somme de this et celle passée en paramètr
+    //retourne une nouvelle Position qui est la somme de this et de celle passée en paramètre
     add(position){
         return new Position(this.x + position.x, this.y + position.y);
     }
@@ -25,11 +24,12 @@ class Hitbox{
         this.height = height;
     }
 
+    //retourne true si la hitbox passée en paramètre croise celle sur laquelle est appelée la méthode
     areIntersecting(hitbox){
-        if(((this.position.x+this.width)<hitbox.position.x) 
-        || ((hitbox.position.x+hitbox.width)<this.position.x)
-        || ((this.position.y+this.height)<hitbox.position.y)
-        || ((hitbox.position.y+hitbox.height)<this.position.y)){
+        if(((this.position.x+this.width-2)<=hitbox.position.x) 
+        || ((hitbox.position.x+hitbox.width-2)<=this.position.x)
+        || ((this.position.y+this.height-6)<=hitbox.position.y)
+        || ((hitbox.position.y+hitbox.height-6)<=this.position.y)){
             return false;
         }
         return true;
@@ -48,23 +48,34 @@ class Image{
         // crée un élément image
         this.img = document.createElement("img");
         //lui ajoute l'attribut src avec le chemin vers l'image fourni en paramètre
-        this.img.setAttribute("src",imgPath);
+        this.img.setAttribute("src", imgPath);
         //lui attribut une position relative
         this.img.setAttribute("style",'position : absolute');
         //règle sa position en css en fonction de l'attribut position de l'objet
         this.img.style.left = this.position.x+"px"; 
         this.img.style.top = this.position.y+"px";
+        this.loadImage(this.img).then(this.processImage.bind(this)).catch(err => console.log(err));
+    }
+
+    processImage() {
         //ajoute cet élément créé dans le conteneur
         this.insideDOM.appendChild(this.img);
         this.width = this.img.naturalWidth;
         this.height = this.img.naturalHeight;
         this.hitbox = new Hitbox(this.position,this.width,this.height)
         if(this.width == 0 || this.height == 0){
-            console.log("Height width image: "+imgPath);
+            console.log("Height width image: "+ this.img.src);
         }
         if(this.hitbox.width == 0 || this.hitbox.height == 0){
-            console.log("Height width hitbox: "+imgPath);
+            console.log("Height width hitbox: "+ this.img.src);
         }
+    }
+
+    loadImage(image) {
+        return new Promise((resolve, reject) => {
+          image.addEventListener("load", () => resolve(image));
+          image.addEventListener("error", err => reject(err));
+        });
     }
 
     //vérifie que la postion en paramètre est dans l'élément insideDOM de this
@@ -97,6 +108,7 @@ class Allie extends Image{
         this.sauve = false;
     }
 
+    //fait disparaitre l'allie de l'écran et fait passé son attribut sauve à true quand l'allie est sauvé
     estSauve(){
         this.img.remove();
         this.sauve = true;
@@ -110,47 +122,25 @@ class Sprite extends Image{
 
     constructor(imgPath, dom, position){
         super(imgPath,dom,position);
-        this.speedX= 0.2;
-        this.speedY= 0.2;
     }
     
     //déplace sans transition le Sprite à la position passée en paramètre
     moveTo(position){
-        //vérifie que la position fournie est correcte et que le sprite ne sortira pas de son élément conteneur
-        if(this.insideDOMcontient(position)){
-            this.position = position;
-            this.hitbox.position = position;
-            this.img.style.left = position.x+"px"; 
-            this.img.style.top = position.y+"px";
-        }
+        this.position = position;
+        this.hitbox.position = position;//met à jour la position de la hitbox de l'objet
+        this.img.style.left = position.x+"px"; 
+        this.img.style.top = position.y+"px";
     }
 
     //ajoute la position fournie à la position actuelle poir déplacer le Sprite avec transition
-    moveRel(position,duration) {
+    moveRel(position) {
         const nouvellePos = this.position.add(position);
         if(this.insideDOMcontient(nouvellePos)){
-            //boucle pour chaque frame
-            const deplacement = new Position (this.speedX*duration,this.speedY*duration);
-            let time = window.setInterval(function (){
-                    if(this.position.x == nouvellePos.x && this.position.y == nouvellePos.y){
-                        clearInterval(time);
-                    }
-                    let tempPos = this.position.add(deplacement);
-                    //si la nouvelle position dépasse l'arrivé souhaitée dans un un des axes, est corrigé
-                    if(tempPos.x > nouvellePos.x){
-                        tempPos.x = nouvellePos.x;
-                    }
-                    if(tempPos.y > nouvellePos.y){
-                        tempPos.y = nouvellePos.y;;
-                    } 
-                    //déplace le sprite
-                    this.moveTo(tempPos);
-
-            }.bind(this), duration);
+            this.moveTo(nouvellePos);
+            
         }
     }
 }
-
 
 /*
 Classe Robot
@@ -183,8 +173,9 @@ class Ennemi extends Sprite{
         this.direction = 1;
     }
 
+    //déplacement de l'ennemi entre deux positions prédéfinies
     patrouiller(duree){
-        let vitesse = 1;
+        let vitesse = 0.75;
         //si déplacement à l'horizontal
         if(this.orientation == 1){
             if(this.direction == 1){//se dirige vert quart1
@@ -192,7 +183,7 @@ class Ennemi extends Sprite{
                 if((this.position.x+vitesse) > this.quart1.x){
                     vitesse = this.quart1.x-this.position.x;
                 }
-                this.moveRel(new Position(vitesse,0),duree);
+                this.moveRel(new Position(vitesse,0));
                 //si atteint la position, change de direction
                 if(this.position.x == this.quart1.x && this.position.y == this.quart1.y){
                     this.direction = 0;
@@ -203,7 +194,7 @@ class Ennemi extends Sprite{
                     if((this.position.x-vitesse) < this.quart0.x){
                         vitesse = this.quart0.x-this.position.x;
                     }
-                    this.moveRel(new Position(-vitesse,0),duree);
+                    this.moveRel(new Position(-vitesse,0));
                     //si atteint la position change de direction
                     if(this.position.x == this.quart0.x && this.position.y == this.quart0.y){
                         this.direction = 1;
@@ -229,7 +220,7 @@ class Ennemi extends Sprite{
                     if((this.position.y-vitesse) < this.quart0.y){
                         vitesse = this.quart0.y-this.position.y;
                     }
-                    this.moveRel(new Position(0,-vitesse),duree);
+                    this.moveRel(new Position(0,-vitesse));
                     //si atteint la position change de direction
                     if(this.position.x == this.quart0.x && this.position.y == this.quart0.y){
                         this.direction = 1;
@@ -242,6 +233,7 @@ class Ennemi extends Sprite{
 
 /*
 Class Vador
+sert à limiter le temps pour compléter un niveau
 */
 
 class Vador extends Sprite{   
@@ -249,9 +241,9 @@ class Vador extends Sprite{
         super(imgPath, dom,position);
         this.speedX=0.1;
     }
-
+    //déplacement de vador toujours dans la même direction
     avancer(duree){
-        this.moveRel(new Position(1,0),duree);
+        this.moveRel(new Position(1,0));
     }
 }
 

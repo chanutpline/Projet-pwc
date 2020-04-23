@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html > 
-        <head>
-                <title>Jeu star wars</title>
-                <meta charset="UTF-8"/>
-                <style> @import url("style.css"); </style>
-                <script src="script_classes.js"></script>
-                <script src="script_jeu.js"></script>	
-	</head>
-	<body>
-                <div id="jeu">
-                        <div id="boutons">
-                                <button class="bouton" id="demarrer" onclick="changeBouton(window.document.getElementById('demarrer'))">Démarrer</button>
-                                <button class="bouton" onclick="game.retourNiveau1()">Retour niveau 1</button>
-                                <button class="bouton" onclick="game.recommenceNiveau()">Recommencer le niveau</button>
-                        </div>
-                        <div id="playground">
+<head>
+        <title>Jeu star wars</title>
+        <meta charset="UTF-8"/>
+        <style> @import url("style.css"); </style>
+        <script src="script_classes.js"></script>
+        <script src="script_jeu.js"></script>	
+</head>
+<body>
+
+        <div id="instructions">
+                <div id="regles" class="texte">
+                        <div>Aide R2D2 à récupérer ses amis et à rejoindre le Faucon Millenium avant Vador tout en évitant les stormtroopers.</div>
+                </div>
+                <div id="commandes" class="texte">
+                        <div>Commandes :</div>
+                        <div>
+                                <ul>
+                                        <li>Flèche du haut : reculer</li>
+                                        <li>Flèche du bas : avancer</li>
+                                        <li>Flèche de gauche : gauche</li>
+                                        <li>Flèche de droite : droite</li>
+                                        <li>Touche S : pause</li>
+                                        <li>Touche D : démarrer</li>
+                                        <li>Touche T : tricher</li>
+        
+                                </ul>
                         </div>
                 </div>
-                <script src="script_instructions.js"></script>
-	</body>
+        </div>
+        <div id="jeu">
+                <div id="boutons">
+                        <button class="bouton" id="demarrer" onclick="changeBouton()">Démarrer</button>
+                        <button class="bouton" onclick="game.retourNiveau1()">Retour niveau 1</button>
+                        <button class="bouton" onclick="game.recommenceNiveau()">Recommencer le niveau</button>
+                        <div id="niveau"></div>
+                </div>
+                <div id="playground">
+                </div>
+        </div>
+        <script src="script_instructions.js"></script>
+</body>
 </html>
  

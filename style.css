@@ -1,3 +1,38 @@
+body {
+    background: url("images/ciel_etoile1.jpg");
+}
+
+.texte {
+    border-radius: 5%;
+    background-color: blanchedalmond;
+    opacity: 0.8;
+    padding: 15px;
+    margin: 40px;
+}
+
+#instructions {
+    position: absolute;
+    top: 80px;
+    left: 930px;
+    width: 500px;
+}
+#regles {
+    position: relative;
+    width: 400px;
+}
+
+#commandes {
+    position: relative;
+    width: 250px;
+}
+
+#jeu {
+    background-color: transparent;
+    position: absolute;
+    top: 50px; 
+    left: 100px;
+}
+
 #playground {
     border: 1px solid black;
     height: 600px;
@@ -5,14 +40,8 @@
     position: relative;
 }
 
-#jeu {
-    position: absolute;
-    top: 50px; 
-    left: 200px;
-}
-
 #boutons {
-    position: relative;
+    position: relative;;
 }
 
 #demarrer {
@@ -23,6 +52,17 @@
     position: relative;
     margin-bottom: 10px;
     margin-right: 10px;
+}
 
-
+#niveau {
+    position: absolute;
+    top : 0px;
+    right: 0px;
+    height: 25px;
+    width: 150px;
+    border: 0.1px solid gray;
+    border-radius: 5px;
+    background-color: rgb(219, 215, 215);
+    text-align: center;
+    line-height: 25px;    
 }
