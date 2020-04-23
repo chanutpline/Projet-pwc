@@ -13,6 +13,7 @@ class Game {
         this.gagne = false;
         this.perdu = false;
         this.niveau = 1;
+        this.termine = false;
         //this.tFrameLast = 0;
         this.robot = robot;
         this.ennemis = {};
@@ -20,6 +21,7 @@ class Game {
         this.obstacles = {}
     }
 
+    //remets à zéro tous les éléments du jeu sauf le niveau
     reInitisalise(){
         for(let ennemi in this.ennemis){
             this.ennemis[ennemi].img.remove();
@@ -29,14 +31,22 @@ class Game {
             this.allies[allie].img.remove();
         }
         this.allies = {};
-        for(this.obstacle in this.obstacles){
-            this.obstacles[this.obstacle].img.remove();
+        for(let obstacle in this.obstacles){
+            this.obstacles[obstacle].img.remove();
         }
         this.obstacles = {};
-        this.chrono.img.remove();
-        this.objectif.img.remove();
-        this.robot.img.remove();
-        this.robot = new Robot ("images/R2D2.png", "playground",new Position(20,20));;
+        if(this.chrono != null){
+            this.chrono.img.remove();
+            this.chrono = null;
+        }
+        if(this.objectif != null){
+            this.objectif.img.remove();
+            this.objectif = null
+        }
+        if(this.robot != null){
+            this.robot.img.remove();
+            this.robot = null;
+        }
         this.perdu = false;
         this.gagne = false;
         this.run = false;
@@ -63,7 +73,8 @@ class Game {
         if(this.ArrowRight){
             deplacement.x = deplacement.x + vitesse;
         }
-        if(!this.vaPercuter(this.robot.hitbox,deplacement)){
+        const hitoboxTest = new Hitbox(this.robot.hitbox.position,this.robot.hitbox.width,this.robot.hitbox.height)
+        if(!this.vaPercuter(hitoboxTest,deplacement)){
             this.robot.moveRel(deplacement,duree);
         }
     }
@@ -127,8 +138,13 @@ class Game {
         alert("Vous avez perdu, mais vous pouvez retenter votre chance !");
     }
 
-    initialiseNiveau2(){
+    initialiseNiveau1(){
         window.document.getElementById("playground").setAttribute("style","background: url(\"images/desert_sand.jpg\")");
+        
+        if(this.robot == null){
+            this.robot = new Robot ("images/R2D2.png", "playground",new Position(20,20));
+        }
+        
         //Ennemis
         const ennemi1 = new Ennemi("images/stormtrooper.png", "playground",new Position(160,200),0,180);
         const ennemi2 = new Ennemi("images/stormtrooper.png", "playground",new Position(530,20),1,220);
@@ -173,7 +189,8 @@ class Game {
     
     }
 
-    initialiseNiveau1(){
+    initialiseNiveau2(){
+        this.robot = new Robot ("images/R2D2.png", "playground",new Position(20,20));
         window.document.getElementById("playground").setAttribute("style","background: url(\"images/fond_noir.jpg\")");
          //Ennemis
          const ennemi1 = new Ennemi("images/stormtrooper.png", "playground",new Position(190,170),0,130);
@@ -193,23 +210,59 @@ class Game {
      
          //Allies
          const leila = new Allie("images/leila.png", "playground", new Position(330,230));
-         const solo = new Allie("images/solo.png", "playground", new Position(710,10));
+         const luke = new Allie("images/luke.png", "playground", new Position(710,10));
+         const solo = new Allie("images/solo.png", "playground", new Position(30,330));
         this.allies.solo = solo;
         this.allies.leila = leila;
+        this.allies.luke = luke;
      
          //Obstacles
-         const obs = new Obstacle("images/obstacle1.png","playground",new Position(0,600-30-91));//
-         const obs2 = new Obstacle("images/obstacle.png","playground",new Position(260,120));//
-         const obs3 = new Obstacle("images/obstacle.png","playground",new Position(50,120));//
-         const obs5 = new Obstacle("images/obstacle2.png","playground",new Position(640,330));//
-         const obs6 = new Obstacle("images/obstacle.png","playground",new Position(420,120));
-         const obs7 = new Obstacle("images/obstacle.png","playground",new Position(660,120));
+         const obs = new Obstacle("images/obstacle1.png","playground",new Position(0,600-30-91));
+         const obs2 = new Obstacle("images/obstacle.png","playground",new Position(250,120));
+         const obs4 = new Obstacle("images/obstacle.png","playground",new Position(420,120));
+         const obs5 = new Obstacle("images/obstacle.png","playground",new Position(50,120));
+         const obs6 = new Obstacle("images/obstacle.png","playground",new Position(660,120));
+         const obs3 = new Obstacle("images/obstacle.png","playground",new Position(50,280));
+         const obs7 = new Obstacle("images/obstacle2.png","playground",new Position(260,190));
+         const obs8 = new Obstacle("images/obstacle2.png","playground",new Position(640,330));
+
         this.obstacles.obs = obs;
         this.obstacles.obs2 = obs2;
         this.obstacles.obs3 = obs3;
+        this.obstacles.obs4 = obs4;
         this.obstacles.obs5 = obs5;
         this.obstacles.obs6 = obs6;
         this.obstacles.obs7 = obs7;
+        this.obstacles.obs8 = obs8;
      
     }
+
+    //animation de fin quand tous les niveaux sont terminées
+    fin(){
+        let faucon = new Sprite ("images/faucon.png", "playground",new Position((654),(500)));
+    }
+
+    //relance le premier niveau du jeu
+    retourNiveau1(){
+        this.reInitisalise();
+        game.termine = false;
+        game.niveau = 1;
+        this.initialiseNiveau1();
+    }
+
+    //relance le niveau actuel 
+    recommenceNiveau(){
+        this.reInitisalise();
+        switch(this.niveau){
+            case 1 :
+                this.initialiseNiveau1();
+                break;
+            case 2 :
+                this.initialiseNiveau2();
+                break;
+            default :
+                break;
+        }
+    }
+
 }

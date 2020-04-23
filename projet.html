@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html >
-	<head>
-        <title>Jeu star wars</title>
-        <meta charset="UTF-8"/>
-        <style> @import url("style.css"); </style>	
+<html > 
+        <head>
+                <title>Jeu star wars</title>
+                <meta charset="UTF-8"/>
+                <style> @import url("style.css"); </style>
+                <script src="script_classes.js"></script>
+                <script src="script_jeu.js"></script>	
 	</head>
-
 	<body>
-        <div id="playground">
-        </div>
-
-        <script src="script_classes.js"></script>
-        <script src="script_jeu.js"></script>
-        <script src="script_instructions.js"></script>
- 
+                <div id="jeu">
+                        <div id="boutons">
+                                <button class="bouton" id="demarrer" onclick="changeBouton(window.document.getElementById('demarrer'))">Démarrer</button>
+                                <button class="bouton" onclick="game.retourNiveau1()">Retour niveau 1</button>
+                                <button class="bouton" onclick="game.recommenceNiveau()">Recommencer le niveau</button>
+                        </div>
+                        <div id="playground">
+                        </div>
+                </div>
+                <script src="script_instructions.js"></script>
 	</body>
-
 </html>
  

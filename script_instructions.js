@@ -48,6 +48,20 @@ window.onkeyup = function(e) {
         }
 }
 
+        
+changeBouton = function(element){
+    if(element.innerHTML == "Démarrer"){
+        game.run = true;
+        element.innerHTML = "Pause";
+    } else{
+        if(element.innerHTML == "Pause"){
+            game.run = false;
+            element.innerHTML = "Démarrer";
+        }
+    }
+}
+
+
 let jeu = {};
 jeu.frameNb = 0;
 jeu.requestId;
@@ -72,18 +86,25 @@ jeu.fonction = function (temps){
         if(game.gagne){
             game.aGagne();
             game.reInitisalise();
-            game.initialiseNiveau2();
+            switch(game.niveau){
+                case 2 :
+                    game.initialiseNiveau2();
+                    break;
+                default :
+                    game.fin();
+                    game.termine = true;
+            }
             jeu.frameNb = 0;
             jeu.requestId = null;
             window.requestAnimationFrame(jeu.fonction);
             //window.cancelAnimationFrame(jeu.requestId);            
         }
-        if(game.run && !game.perdu && !game.gagne){
+        if(game.run && !game.termine){
             jeu.frameNb = jeu.frameNb+1;
             game.updateFrame(10);
             jeu.requestId = window.requestAnimationFrame(jeu.fonction);   
         }
-        if(!game.run) {
+        if(!game.run || game.termine) {
             jeu.requestId = window.requestAnimationFrame(jeu.fonction);
         }
      } else {  

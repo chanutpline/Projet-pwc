@@ -19,10 +19,10 @@ Classe Hitbox
 */
 class Hitbox{
 
-    constructor(position,width,heigth){
+    constructor(position,width,height){
         this.position = position;
         this.width = width;
-        this.height = heigth;
+        this.height = height;
     }
 
     areIntersecting(hitbox){
@@ -59,6 +59,12 @@ class Image{
         this.width = this.img.naturalWidth;
         this.height = this.img.naturalHeight;
         this.hitbox = new Hitbox(this.position,this.width,this.height)
+        if(this.width == 0 || this.height == 0){
+            console.log("Height width image: "+imgPath);
+        }
+        if(this.hitbox.width == 0 || this.hitbox.height == 0){
+            console.log("Height width hitbox: "+imgPath);
+        }
     }
 
     //vérifie que la postion en paramètre est dans l'élément insideDOM de this
@@ -113,7 +119,7 @@ class Sprite extends Image{
         //vérifie que la position fournie est correcte et que le sprite ne sortira pas de son élément conteneur
         if(this.insideDOMcontient(position)){
             this.position = position;
-            this.hitbox.position = this.position;
+            this.hitbox.position = position;
             this.img.style.left = position.x+"px"; 
             this.img.style.top = position.y+"px";
         }
