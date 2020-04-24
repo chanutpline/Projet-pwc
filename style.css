@@ -54,6 +54,14 @@ body {
     margin-right: 10px;
 }
 
+#vies {
+    position:absolute ;
+    top: 0px;
+    left: 490px;
+    height: 25px;
+
+}
+
 #niveau {
     position: absolute;
     top : 0px;
@@ -62,7 +70,8 @@ body {
     width: 150px;
     border: 0.1px solid gray;
     border-radius: 5px;
-    background-color: rgb(219, 215, 215);
     text-align: center;
-    line-height: 25px;    
+    line-height: 25px;
+    background-color: rgb(219, 215, 215);
+
 }
