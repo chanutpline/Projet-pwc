@@ -135,7 +135,7 @@ class Game {
         //le joueur perd une vie, le nombre restant est actualisé dans l'objet jeu et l'affichage est adapté
         game.vies = game.vies - 1;
         retireVie("vie" + this.vies);
-        //si le joueur n'a plus de vie il de définitivement perdu et la partie est finie
+        //si le joueur n'a plus de vie il a définitivement perdu et la partie est finie
         if (this.vies == 0) {
             alert("Vous avez perdu");
             this.reInitisalise();

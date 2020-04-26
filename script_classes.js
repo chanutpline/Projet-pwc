@@ -239,7 +239,6 @@ sert à limiter le temps pour compléter un niveau
 class Vador extends Sprite {
     constructor(imgPath, dom, position) {
         super(imgPath, dom, position);
-        this.speedX = 0.1;
     }
     //déplacement de vador toujours dans la même direction
     avancer(duree) {

@@ -8,7 +8,7 @@ let game = new Game(robot);
 let element = window.document.getElementById('demarrer');
 
 //contient les pistes audio utilisées
-let audio = {};
+const audio = {};
 audio.perduN = window.document.getElementById("perduN");
 audio.gagneN = window.document.getElementById("gagneN");
 audio.perdu = window.document.getElementById("perdu");
@@ -51,7 +51,7 @@ bloqueBouton = function (id) {
 afficheVies = function(){
     let cadre = window.document.getElementById("vies");
     //boucle trois fois car trois vies
-    for(let i = 1;i <4;i++){
+    for(let i = 0;i <3;i++){
         //s'il y a encore des vies de la partie précédante, les enlève
         if(window.document.getElementById("vie"+i) != null){
             window.document.getElementById("vie"+i).remove();
