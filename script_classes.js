@@ -1,3 +1,5 @@
+//script de tous les prototypes utilisés par le jeu
+
 /*
 Classe Position
 */

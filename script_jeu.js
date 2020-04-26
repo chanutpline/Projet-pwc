@@ -1,3 +1,4 @@
+//script du prototype jeu
 
 /*
 Classe Jeu
@@ -76,6 +77,10 @@ class Game {
 
     //toutes les actoins effectuées à chaque boucle de jeu
     updateFrame(duree) {
+        //si vador est à un quart, la moitié ou trois quart du chemin, lance l'audio
+        if(this.chrono.position.x == 165 || this.chrono.position.x == 325 || this.chrono.position.x == 488){
+            audio.vador.play();
+        }
         //gère le déplacement du robot
         this.deplacementRobot(duree);
         //parcours tous les ennemis du niveau pour gérer leur deplacement et s'ils touchent le robot le niveau est perdu
@@ -107,11 +112,12 @@ class Game {
 
     //affiche un message de félicitations et lance le niveau suivant ou marque le jeu comme terminé
     aGagne() {
+        audio.gagneN.play();
         this.niveau = this.niveau + 1;
         alert("Félicitations vous avez terminé ce niveau !");
         this.reInitisalise();
         //affiche le numéro du niveau dans le cadre "niveau"
-        window.document.getElementById("niveau").innerHTML = "Niveau "+this.niveau;
+        window.document.getElementById("niveau").innerHTML = "Niveau " + this.niveau;
         switch (this.niveau) {
             case 2:
                 this.initialiseNiveau2();
@@ -125,14 +131,18 @@ class Game {
 
     //affiche un message quand le niveau est perdu et relance le niveau en cours
     aPerdu() {
-        retireVie("vie"+this.vies);
-        game.vies = game.vies-1;
-        if(this.vies == 0){
+        audio.perduN.play();
+        //le joueur perd une vie, le nombre restant est actualisé dans l'objet jeu et l'affichage est adapté
+        game.vies = game.vies - 1;
+        retireVie("vie" + this.vies);
+        //si le joueur n'a plus de vie il de définitivement perdu et la partie est finie
+        if (this.vies == 0) {
             alert("Vous avez perdu");
             this.reInitisalise();
             this.termine = true;
+        //si le joueur a encore une ou des vies le niveau actuel est lancé de nouveau
         } else {
-            alert("Vous avez perdu, mais vous pouvez retenter votre chance ! Il vous reste "+this.vies+" essais");
+            alert("Vous avez perdu, mais vous pouvez retenter votre chance ! Il vous reste " + this.vies + " essais");
             this.reInitisalise();
             switch (this.niveau) {
                 case 1:
@@ -149,34 +159,40 @@ class Game {
     //animation de fin quand tous les niveaux sont terminées
     fin() {
         desactiveClavier();
-        if(this.vies > 0){
-                    //si l'objectif est null (première fois que la méthode fin est appelée) 
-        if (this.objectif == null) {
-            //affiche un message de félicitation
-            this.message = document.createElement('img');
-            this.message.setAttribute('src', "images/felicitations.png");
-            this.message.setAttribute("style", "position : absolute; top :100px; left:125px")
-            //bloque les boutons de démarrage de niveau et pour recommencer le niveau
-            bloqueBouton('demarrer');
-            bloqueBouton('recommencer');
-            //crée l'objectif
-            window.document.getElementById("playground").appendChild(this.message);
-            game.objectif = new Sprite("images/faucon.png", "playground", new Position((654), (500)));
-        }
-
-        //déplacement de l'objectif
-        if (this.objectif.position.y > 430) {
-
-            this.objectif.moveRel(new Position(-1, -2));
-        }
-        if (this.objectif.position.y <= 430) {
-            this.objectif.moveRel(new Position(-2, -1));
-        }
-        if (this.objectif.position.x <= 1) {
-            this.objectif.img.remove();
-        }
-        } else {
+        //si le joueur a gagné
+        if (this.vies > 0) {
+            //si l'objectif est null (première fois que la méthode fin est appelée) 
             if (this.objectif == null) {
+                audio.gagne.play();
+                //affiche un message de félicitation
+                this.message = document.createElement('img');
+                this.message.setAttribute('src', "images/felicitations.png");
+                this.message.setAttribute("style", "position : absolute; top :100px; left:125px")
+                //bloque les boutons de démarrage de niveau et pour recommencer le niveau
+                bloqueBouton('demarrer');
+                bloqueBouton('recommencer');
+                //crée l'objectif
+                window.document.getElementById("playground").appendChild(this.message);
+                game.objectif = new Sprite("images/faucon.png", "playground", new Position((654), (500)));
+            }
+
+            //déplacement de l'objectif
+            if (this.objectif.position.y > 430) {
+
+                this.objectif.moveRel(new Position(-1, -2));
+            }
+            if (this.objectif.position.y <= 430) {
+                this.objectif.moveRel(new Position(-2, -1));
+            }
+            if (this.objectif.position.x <= 1) {
+                this.objectif.img.remove();
+            }
+            //si le joueur a perdu
+        } else {
+            //première fois que la méthode est appelée
+            if (this.objectif == null) {
+                //lance la musique
+                audio.perdu.play();
                 //affiche un message de félicitation
                 this.message = document.createElement('img');
                 this.message.setAttribute('src', "images/perdu.png");
@@ -187,8 +203,8 @@ class Game {
                 //crée l'objectif
                 window.document.getElementById("playground").appendChild(this.message);
                 game.objectif = new Image("images/faucon.png", "playground", new Position(654, 500));
-                game.chrono = new Image("images/vador.png", "playground", new Position(480,500));
-                game.robot = new Image("images/R2D2.png", "playground", new Position(530,520));
+                game.chrono = new Image("images/vador.png", "playground", new Position(480, 500));
+                game.robot = new Image("images/R2D2.png", "playground", new Position(530, 520));
 
             }
         }
@@ -196,6 +212,7 @@ class Game {
 
     //remets à zéro tous les éléments du jeu sauf le niveau actuel
     reInitisalise() {
+        audio.fond.pause();
         for (let ennemi in this.ennemis) {
             this.ennemis[ennemi].img.remove();
         }
@@ -237,26 +254,39 @@ class Game {
     retourNiveau1() {
         //si le jeu vient d'être terminé
         if (this.termine) {
-            //retire le message de félicitations
+            //retire le message
             this.message.remove();
             this.message = null;
             //débloque les boutons
             bloqueBouton('demarrer');
             bloqueBouton('recommencer');
+            //débloque le clavier
+            activeClavier();
             //remet l'attribut termine à false
             this.termine = false;
+            if(this.vies == 0){
+                audio.perdu.pause();
+                audio.perdu.load();
+            } else {
+                audio.gagne.pause();
+                audio.gagne.load();
+            }
         }
         this.vies = 3;
         afficheVies();
-        activeClavier();
         //reinitialise le jeu et remet les paramètres au niveau 1
         this.reInitisalise();
         this.niveau = 1;
         this.initialiseNiveau1();
+        //remets les pistes audios au début
+        console.log("test");
+        audio.fond.load();
     }
 
     //relance le niveau actuel (réinitialise le jeu et remet le niveau actuel)
     recommenceNiveau() {
+        audio.fond.pause();
+        audio.fond.load();
         this.reInitisalise();
         switch (this.niveau) {
             case 1:

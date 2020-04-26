@@ -1,8 +1,21 @@
+//instructions de quand la page est chargée
+
 //crée le jeu
 const robot = new Robot("images/R2D2.png", "playground", new Position(20, 20));
 let game = new Game(robot);
-//bouton de démarrage et de pauses
+
+//bouton démarrer/pause
 let element = window.document.getElementById('demarrer');
+
+//contient les pistes audio utilisées
+let audio = {};
+audio.perduN = window.document.getElementById("perduN");
+audio.gagneN = window.document.getElementById("gagneN");
+audio.perdu = window.document.getElementById("perdu");
+audio.gagne = window.document.getElementById("gagne");
+audio.fond = window.document.getElementById("fond");
+audio.vador = window.document.getElementById("vador");
+
 
 //action du bouton de démarrage
 changeBouton = function () {
@@ -10,11 +23,13 @@ changeBouton = function () {
     if (element.innerHTML == "Démarrer") {
         game.run = true;
         element.innerHTML = "Pause";
+        audio.fond.play();
     } else {
         //met le jeu en pause et transforme le bouton en bouton démarrer
         if (element.innerHTML == "Pause") {
             game.run = false;
             element.innerHTML = "Démarrer";
+            audio.play.pause();
         }
     }
 }
@@ -32,12 +47,16 @@ bloqueBouton = function (id) {
     }
 }
 
+//crée les images des vies du joueur et les affiche dans la div 'vies'
 afficheVies = function(){
     let cadre = window.document.getElementById("vies");
+    //boucle trois fois car trois vies
     for(let i = 1;i <4;i++){
+        //s'il y a encore des vies de la partie précédante, les enlève
         if(window.document.getElementById("vie"+i) != null){
             window.document.getElementById("vie"+i).remove();
         }
+        //crée une image de vie numérotée
         let image = document.createElement('img');
         image.setAttribute('src',"images/faucon.png");
         image.setAttribute('style',"position : relative; height : 25px; margin-left : 10px");
@@ -46,10 +65,12 @@ afficheVies = function(){
     }
 }
 
+//retire l'image de vie dont l'id a été passé en paramètre
 retireVie = function(vie){
     window.document.getElementById(vie).remove();
 }
 
+//active les touches du jeu
 activeClavier = function() {
 //gestions des touches appuyées
 window.onkeydown = function (e) {
@@ -74,11 +95,13 @@ window.onkeydown = function (e) {
             //mets le jeu en pause et mets le bouton de démarrage à jours
             element.innerHTML = "Démarrer";
             game.run = false;
+            audio.fond.pause();
             break;
         case 'd':
             //lance le jeu et mets le bouton de démarrage à jour
             element.innerHTML = "Pause";
             game.run = true;
+            audio.fond.play();
             break;
         case 't':
             game.gagne = true;
@@ -87,6 +110,7 @@ window.onkeydown = function (e) {
     }
 }
 
+//desactive les touches du jeu
 desactiveClavier = function(){
     window.onkeydown = function (e){
 
@@ -136,7 +160,6 @@ jeu.fonction = function (temps) {
     }
     //si le niveau en en cours appele la méthode updateFrame (gère le déroulé du niveau) et mets à jours frameNb
     if (game.run && !game.termine) {
-        console.log("run");
         game.updateFrame(10);
         jeu.frameNb = jeu.frameNb + 1;
         window.requestAnimationFrame(jeu.fonction);
@@ -150,9 +173,10 @@ jeu.fonction = function (temps) {
         game.fin();
     }
 }
+
+//actions effectuées quand la page est chargée
 activeClavier();
 afficheVies();
-//initialise le niveau 1
 game.initialiseNiveau1();
 //lannce la boucle du jeu
 jeu.fonction(0);
